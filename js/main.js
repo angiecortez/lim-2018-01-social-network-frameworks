@@ -1,25 +1,19 @@
-var config = {
-   /*  apiKey: "AIzaSyAudCp_UEAC-lt-_Aqiyys5O3FnzLUySqA",
-    authDomain: "vuefiredo-9a9b5.firebaseapp.com",
-    databaseURL: "https://vuefiredo-9a9b5.firebaseio.com",
-    storageBucket: "vuefiredo-9a9b5.appspot.com", */
-    apiKey: "AIzaSyAlVW9H1KG7T0TVB_moqQP46KTavNTQQKY",
-    
+let config = {
+   apiKey: "AIzaSyAlVW9H1KG7T0TVB_moqQP46KTavNTQQKY",    
     authDomain: "redsocial-6a748.firebaseapp.com",
     databaseURL: "https://redsocial-6a748.firebaseio.com",
     projectId: "redsocial-6a748",
     storageBucket: "redsocial-6a748.appspot.com",
-    /* messagingSenderId: "831467570628" */
 };
 firebase.initializeApp(config);
 
-var db = firebase.database(),
+let db = firebase.database(),
     auth = firebase.auth(),
     proveedor = new firebase.auth.GoogleAuthProvider();
 
 Vue.component('todo-list', {
     template: '#todo-template',
-    data: function () {
+    data: () =>{
         return {
             nuevaTarea: null,
             editandoTarea: null,
@@ -27,7 +21,7 @@ Vue.component('todo-list', {
     },
     props: ['tareas', 'autentificado', 'usuarioActivo'],
     methods: {
-        agregarTarea: function (tarea) {
+        agregarTarea:  (tarea) =>{
             db.ref('tareas/').push({
                 titulo: tarea,
                 completado: false,
@@ -37,30 +31,30 @@ Vue.component('todo-list', {
             });
             this.nuevaTarea = '';
         },
-        editarTarea: function (tarea) {
+        editarTarea:  (tarea)=> {
             db.ref('tareas/' + tarea['.key']).update({
                 titulo: tarea.titulo
             });
         },
-        actualizarEstadoTarea: function (estado, tarea) {
+        actualizarEstadoTarea:  (estado, tarea) =>{
             db.ref('tareas/' + tarea['.key']).update({
                 completado: estado ? true : false,
             });
         },
-        eliminarTarea: function (tarea) {
+        eliminarTarea: (tarea) =>{
             db.ref('tareas/' + tarea['.key']).remove();
         },
     }
 });
 
-var vm = new Vue({
+let vm = new Vue({
     el: 'body',
-    ready: function () {
+    ready:  () =>{
         // RT database
-        db.ref('tareas/').on('value', function (snapshot) {
+        db.ref('tareas/').on('value',  (snapshot)=> {
             vm.tareas = [];
-            var objeto = snapshot.val();
-            for (var propiedad in objeto) {
+            let objeto = snapshot.val();
+            for (let propiedad in objeto) {
                 vm.tareas.unshift({
                     '.key': propiedad,
                     completado: objeto[propiedad].completado,
@@ -73,7 +67,7 @@ var vm = new Vue({
         });
 
         // Auth
-        auth.onAuthStateChanged(function (user) {
+        auth.onAuthStateChanged((user)=> {
             if (user) {
                 console.info('Conectado: ', user);
                 vm.autentificado = true;
@@ -91,13 +85,13 @@ var vm = new Vue({
         tareas: [],
     },
     methods: {
-        conectar: function () {
-            firebase.auth().signInWithPopup(proveedor).catch(function (error) {
+        conectar:  ()=> {
+            firebase.auth().signInWithPopup(proveedor).catch( (error) =>{
                 console.error('Error haciendo logIn: ', error);
             });
         },
-        desconectar: function () {
-            firebase.auth().signOut().catch(function (error) {
+        desconectar:  ()=> {
+            firebase.auth().signOut().catch( (error)=> {
                 console.error('Error haciendo logOut: ', error);
             });
         }
